@@ -1,0 +1,56 @@
+# Images
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.gif filter=lfs diff=lfs merge=lfs -text
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.tiff filter=lfs diff=lfs merge=lfs -text
+*.tga filter=lfs diff=lfs merge=lfs -text
+*.exr filter=lfs diff=lfs merge=lfs -text
+*.hdr filter=lfs diff=lfs merge=lfs -text
+*.cubemap filter=lfs diff=lfs merge=lfs -text
+# Audio
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.aif filter=lfs diff=lfs merge=lfs -text
+*.aiff filter=lfs diff=lfs merge=lfs -text
+# Video
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.mov filter=lfs diff=lfs merge=lfs -text
+*.mpg filter=lfs diff=lfs merge=lfs -text
+*.mpeg filter=lfs diff=lfs merge=lfs -text
+*.avi filter=lfs diff=lfs merge=lfs -text
+*.webm filter=lfs diff=lfs merge=lfs -text
+# 3D Models
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.obj filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text
+*.max filter=lfs diff=lfs merge=lfs -text
+*.ma filter=lfs diff=lfs merge=lfs -text
+*.dae filter=lfs diff=lfs merge=lfs -text
+# Fonts
+*.otf filter=lfs diff=lfs merge=lfs -text
+*.ttf filter=lfs diff=lfs merge=lfs -text
+# Other Large Binary Files
+*.bytes filter=lfs diff=lfs merge=lfs -text
+*.dll filter=lfs diff=lfs merge=lfs -text # Be cautious with DLLs, some might be small
+*.unitypackage filter=lfs diff=lfs merge=lfs -text
+# *.asset can be tricky. Some are text (materials, animations if serialized as text),
+# but others like TerrainData or LightingData can be large and binary.
+# Handle specific large .asset files or folders if needed:
+# Assets/PathToLargeAssets/MyHeavy.asset filter=lfs diff=lfs merge=lfs -text
+# Or, if you know certain types of .asset files are always binary and large:
+# *TerrainData.asset filter=lfs diff=lfs merge=lfs -text
+# *LightingData.asset filter=lfs diff=lfs merge=lfs -text
+# Unity specific text assets (ensure these are NOT tracked by LFS by omission or explicitly marking them as text)
+*.cs text diff=csharp
+*.shader text
+*.cginc text
+*.unity text merge=unityyamlmerge eol=lf
+*.prefab text merge=unityyamlmerge eol=lf
+*.mat text merge=unityyamlmerge eol=lf  # If serialized as text and small
+*.anim text merge=unityyamlmerge eol=lf # If serialized as text and small
+*.controller text merge=unityyamlmerge eol=lf
+*.meta text eol=lf
+# Add other text-based Unity asset types as needed

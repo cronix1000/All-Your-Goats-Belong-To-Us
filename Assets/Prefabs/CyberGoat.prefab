@@ -140,10 +140,10 @@ MonoBehaviour:
   xpValue: 50
   goatLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
 --- !u!50 &7958559584831398479
 Rigidbody2D:
   serializedVersion: 5

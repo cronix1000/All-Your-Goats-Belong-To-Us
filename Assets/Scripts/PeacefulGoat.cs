@@ -405,16 +405,16 @@ public class PeacefulGoat : MonoBehaviour
 
     void UpdateVisualState() // For debugging or changing sprite based on state
     {
-        // Example: Change color based on state
-        // SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        // if (sr == null) return;
-        // switch (currentState)
-        // {
-        //     case GoatState.Wandering: sr.color = Color.white; break;
-        //     case GoatState.Stacked: sr.color = Color.gray; break;
-        //     case GoatState.Herded: sr.color = Color.cyan; break;
-        //     case GoatState.Converting: sr.color = Color.magenta; break;
-        // }
+       // Example: Change color based on state
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr == null) return;
+        switch (currentState)
+        {
+            case GoatState.Wandering: sr.color = Color.white; break;
+            case GoatState.Stacked: sr.color = Color.gray; break;
+            case GoatState.Herded: sr.color = Color.cyan; break;
+            case GoatState.Converting: sr.color = Color.magenta; break;
+        }
     }
 
 
@@ -425,10 +425,10 @@ public class PeacefulGoat : MonoBehaviour
         {
             _goatBelowMe._goatsOnTopOfMe.Remove(this);
         }
-        foreach (var goatAbove in _goatsOnTopOfMe)
-        {
-            if (goatAbove != null) goatAbove.BecomeBaseAndWander();
-        }
+        // foreach (var goatAbove in _goatsOnTopOfMe)
+        // {
+        //     if (goatAbove != null) goatAbove.BecomeBaseAndWander();
+        // }
 
         if (!_turnedIntoCyborgForReal) 
         {

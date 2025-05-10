@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public int cyborgGoatsCount = 0;
     public int totalGoatsToSave = 10; // Example win condition
     public int maxCyborgGoatsAllowed = 5; // Example loss condition
+    public int goatsToHerd;
+    public int goatsHerded = 0; // Number of goats herded in the current wave
 
     public int playerXP = 0;
     public int playerLevel = 1;
@@ -27,39 +29,60 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverScreen;
     public GameObject winScreen;
 
-
     private void Awake()
     {
+        Debug.Log($"Awake called for {gameObject.name}. Current Instance is {(Instance == null ? "null" : Instance.gameObject.name)}"); // Optional debug line
         if (Instance != null && Instance != this)
         {
+            // Debug.LogWarning($"Duplicate GameManager: {gameObject.name} is destroying itself because Instance is already {Instance.gameObject.name}."); // Optional debug line
             Destroy(gameObject);
+            return; // Return after destroying to prevent further execution on this instance
         }
         else
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Optional: if you want it to persist across scenes
+             Debug.Log($"{gameObject.name} has been set as GameManager.Instance."); // Optional debug line
         }
 
         UpdateUI();
-        if(gameOverScreen) gameOverScreen.SetActive(false);
-        if(winScreen) winScreen.SetActive(false);
+        if (gameOverScreen) gameOverScreen.SetActive(false);
+        if (winScreen) winScreen.SetActive(false);
     }
 
     // --- Goat Management ---
     public void GoatConvertedToCyborg()
     {
-        peacefulGoatsCount--;
+        if (peacefulGoatsCount > 0) // Ensure we don't go negative if something unexpected happens
+        {
+            peacefulGoatsCount--;
+        }
         cyborgGoatsCount++;
-        CheckLossCondition();
+        goatsHerded++;
+        UpdateUI();
+        CheckLossCondition(); // Keep your original loss condition logic
+
+
+    }
+
+    public void GoatHerded()
+    {
+                // --- Notify WaveManager ---
+        if (WaveManager.Instance != null)
+        {
+            WaveManager.Instance.NotifyPeacefulGoatConverted();
+        }
+        peacefulGoatsCount++;
         UpdateUI();
     }
 
     public void CyborgGoatRestored()
     {
-        cyborgGoatsCount--;
+        if (cyborgGoatsCount > 0) // Prevent going negative
+        {
+            cyborgGoatsCount--;
+        }
         peacefulGoatsCount++;
-        // Potentially add XP for restoring
-        AddXP(20);
+        
         UpdateUI();
     }
 
@@ -68,36 +91,17 @@ public class GameManager : MonoBehaviour
         peacefulGoatsCount++;
         UpdateUI();
     }
-    public void UnregisterPeacefulGoat() // if a goat is destroyed/removed
+    public void UnregisterPeacefulGoat() // if a goat is destroyed/removed not by conversion
     {
-        peacefulGoatsCount--;
+        if (peacefulGoatsCount > 0)
+        {
+            peacefulGoatsCount--;
+        }
         UpdateUI();
     }
 
 
     // --- XP and Leveling ---
-    public void AddXP(int amount)
-    {
-        playerXP += amount;
-        Debug.Log("Player gained " + amount + " XP. Total XP: " + playerXP);
-        if (playerXP >= xpToNextLevel)
-        {
-            LevelUp();
-        }
-        UpdateUI();
-    }
-
-    private void LevelUp()
-    {
-        playerLevel++;
-        playerXP -= xpToNextLevel; // Carry over extra XP
-        xpToNextLevel = Mathf.RoundToInt(xpToNextLevel * 1.5f); // Increase XP needed for next level
-        Debug.Log("Player Leveled Up to Level " + playerLevel + "! Next level in " + xpToNextLevel + " XP.");
-        // Add level up benefits here (e.g., increase player stats, unlock abilities)
-        playerMaxHealth += 20;
-        playerHealth = playerMaxHealth; // Heal on level up
-        UpdateUI();
-    }
 
     // --- Player Health ---
     public void PlayerDamaged(int amount)
@@ -115,13 +119,21 @@ public class GameManager : MonoBehaviour
     // --- Win/Loss Conditions ---
     private void CheckLossCondition()
     {
-        if (peacefulGoatsCount <= 0 && cyborgGoatsCount > 0) // All remaining goats are cyborgs
+        // This condition might need refinement based on WaveManager logic.
+        // Does "peacefulGoatsCount <= 0" mean all peaceful goats globally, or just those from the current wave?
+        // For now, it's a global check.
+        if (peacefulGoatsCount <= 0 && cyborgGoatsCount > 0 && WaveManager.Instance == null) // Example: if no WaveManager, this simple loss condition applies
         {
-            GameOver("All your goats belong to them!");
+             // If WaveManager is present, it might control the overall win/loss for goat population.
+             // This specific condition "All your goats belong to them!" might be better triggered
+             // if ALL peaceful goats from ALL waves are converted and no more can be spawned.
+            // GameOver("All your goats belong to them!");
+            // Consider making this more specific, e.g., if there are no active waves and no peaceful goats left.
         }
-        if (cyborgGoatsCount >= maxCyborgGoatsAllowed)
+
+        if (peacefulGoatsCount <= 0 || cyborgGoatsCount >= maxCyborgGoatsAllowed)
         {
-            GameOver("Too many goats have been assimilated!");
+            GameOver("Too many goats have been assimilated! The pasture is overrun.");
         }
     }
 
@@ -135,22 +147,25 @@ public class GameManager : MonoBehaviour
     public void GameOver(string message)
     {
         Debug.Log("GAME OVER: " + message);
-        if(gameOverScreen) gameOverScreen.SetActive(true);
-        // Add logic like Time.timeScale = 0; to pause game, show game over UI, etc.
+        if (gameOverScreen) gameOverScreen.SetActive(true);
         Time.timeScale = 0f; // Pause game
     }
 
     public void WinGame(string message)
     {
         Debug.Log("YOU WIN: " + message);
-        if(winScreen) winScreen.SetActive(true);
-        // Add logic like Time.timeScale = 0; show win UI, etc.
+        if (winScreen) winScreen.SetActive(true);
         Time.timeScale = 0f; // Pause game
     }
 
     public void RestartGame()
     {
         Time.timeScale = 1f;
+        // Reset static instance if this GameManager is part of the scene being reloaded.
+        // If it's DontDestroyOnLoad, and you reload the scene it was originally in,
+        // the Awake logic should handle the duplicate.
+        // However, if you are completely resetting game state, more might be needed.
+        Instance = null; // Allow the next scene load to set its GameManager as the instance
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 

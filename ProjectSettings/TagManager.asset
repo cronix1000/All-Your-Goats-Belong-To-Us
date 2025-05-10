@@ -5,7 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Enemy
-  - enemy
+  - Grass
+  - PeacefulGoat
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - UI
   - peaceful
   - Player
-  - 
+  - Goat
   - 
   - 
   - 

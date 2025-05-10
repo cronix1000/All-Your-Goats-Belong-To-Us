@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4490533906092824293}
   - component: {fileID: 7437534974621128049}
   - component: {fileID: 7247176547663524709}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,9 +115,9 @@ GameObject:
   - component: {fileID: 6684359430068854503}
   - component: {fileID: 7777759552530034363}
   - component: {fileID: 8023779845525032938}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: PeacefulGoat
-  m_TagString: Untagged
+  m_TagString: PeacefulGoat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -151,13 +151,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b350573198b9a4bbccf7e85dd997ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  herdingUICanvas: {fileID: 4490533906092824293}
-  herdingProgressFillImage: {fileID: 6908310165784988117}
-  wanderSpeed: 2
+  moveSpeed: 3
+  wanderSpeedMultiplier: 0.6
   wanderRadius: 20
   minWanderTime: 5
   maxWanderTime: 5
-  followPlayerSpeed: 5
+  wanderPointReachedThreshold: 0.5
+  wanderAroundInitialPosition: 1
+  visualsTransform: {fileID: 4172130415149497660}
+  useMapBoundaries: 1
+  mapMinBounds: {x: 0, y: 0}
+  mapMaxBounds: {x: 50, y: 50}
+  herdingUICanvas: {fileID: 4490533906092824293}
+  herdingProgressFillImage: {fileID: 6908310165784988117}
+  followPlayerSpeedMultiplier: 1
   followDistanceToPlayer: 1
   maxFollowDistance: 10
   timeToUnherdWhenTooFar: 5
@@ -165,9 +172,10 @@ MonoBehaviour:
   separationForce: 5
   peacefulGoatLayer:
     serializedVersion: 2
-    m_Bits: 0
-  currentState: 0
+    m_Bits: 64
+  eatingDuration: 3
   cyborgGoatPrefab: {fileID: 4359654655100326907, guid: dd648d8edbbf9fe4196a9e73e9430de4, type: 3}
+  currentState: 0
 --- !u!50 &7777759552530034363
 Rigidbody2D:
   serializedVersion: 5
@@ -252,7 +260,7 @@ GameObject:
   - component: {fileID: 8755114229705405901}
   - component: {fileID: 8790931369794832819}
   - component: {fileID: 6908310165784988117}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: HealthFillBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -327,7 +335,7 @@ GameObject:
   - component: {fileID: 774511890384047376}
   - component: {fileID: 5117755984343043380}
   - component: {fileID: 1396093669390017661}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -401,7 +409,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4172130415149497660}
   - component: {fileID: 2850668203586942160}
-  m_Layer: 6
+  - component: {fileID: 2371081370869630916}
+  m_Layer: 8
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -418,7 +427,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.041305948}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: -2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4217839881540232346}
@@ -466,15 +475,37 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.8962264, g: 0.5641493, b: 0.14796188, a: 1}
+  m_SortingOrder: 2
+  m_Sprite: {fileID: -5628364500581998022, guid: 3a3ad6b5742db064183438dd283d82d2, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.82, y: 0.96}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &2371081370869630916
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8684358039136774305}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b082781a7d32b034481855e783db1506, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

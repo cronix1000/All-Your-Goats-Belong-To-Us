@@ -24,7 +24,7 @@ public class MainProjectile : MonoBehaviour {
             // call enemy damamge function
             collision.gameObject.GetComponent<BasicEnemyAI>().TakeDamage(damage);
             // push back enemy
-            collision.gameObject.GetComponent<BasicEnemyAI>().ApplyKnockbackForce(direction, 5f);
+            collision.gameObject.GetComponent<BasicEnemyAI>().ApplyKnockback(direction, 5f, .3f);
             Destroy(gameObject);
         }
 

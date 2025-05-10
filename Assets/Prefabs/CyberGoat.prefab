@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5206740701555262298}
   - component: {fileID: 1921421149048918104}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,10 +96,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8277209660331791981}
-  - component: {fileID: 7452535649010533229}
   - component: {fileID: 7958559584831398479}
   - component: {fileID: 7031305963872157335}
-  m_Layer: 0
+  - component: {fileID: 1892801661932636961}
+  m_Layer: 8
   m_Name: CyberGoat
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -122,36 +122,6 @@ Transform:
   - {fileID: 5206740701555262298}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7452535649010533229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4359654655100326907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 122a8cea6a8c2ec44aa736d7703c824a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 3
-  detectionRadius: 10
-  damageToPlayer: 10
-  xpValue: 50
-  goatLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  wanderSpeedMultiplier: 0.6
-  wanderRadius: 5
-  wanderPointReachedThreshold: 0.5
-  wanderTimerDurationMin: 2
-  wanderTimerDurationMax: 5
-  healthBarFill: {fileID: 0}
-  totalHealth: 20
-  health: 0
 --- !u!50 &7958559584831398479
 Rigidbody2D:
   serializedVersion: 5
@@ -225,3 +195,40 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1892801661932636961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4359654655100326907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4775aa97dd667e441834992d555adfe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
+  wanderSpeedMultiplier: 0.6
+  wanderRadius: 5
+  minWanderTime: 2
+  maxWanderTime: 5
+  wanderPointReachedThreshold: 0.5
+  wanderAroundInitialPosition: 1
+  visualsTransform: {fileID: 5206740701555262298}
+  useMapBoundaries: 1
+  mapMinBounds: {x: 0, y: 0}
+  mapMaxBounds: {x: 50, y: 50}
+  detectionRadius: 10
+  damageToPlayer: 10
+  xpValue: 50
+  goatLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  healthBarFill: {fileID: 0}
+  totalHealth: 20
+  currentHealth: 0
+  conversionTimeToConvert: 1.5
+  peacefulGoatPrefab: {fileID: 1632287165159457289, guid: 4bf4d76272138104a8258295f74391eb, type: 3}

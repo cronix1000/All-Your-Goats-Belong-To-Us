@@ -46,9 +46,6 @@ public class PlayerController : MonoBehaviour
         playerControls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         playerControls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
-        playerControls.Player.PrimaryAttack.performed += ctx => MainAttack();
-        playerControls.Player.SecondaryAttack.performed += ctx => SecondaryAttack();
-
         currentScanTimer = 0f;
     }
 
@@ -194,19 +191,4 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void MainAttack()
-    {
-        // Implement main attack logic here
-        Debug.Log("Main attack executed.");
-        // Example: Instantiate a projectile
-        GameObject projectile = Instantiate(MainProjectilePrefab, transform.position, Quaternion.identity);
-        Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
-        Vector2 direction = (Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()) - transform.position).normalized;
-        projectileRb.linearVelocity = direction * 10f; // Adjust speed as needed
-    }
-    private void SecondaryAttack()
-    {
-        // Implement secondary attack logic here
-        Debug.Log("Secondary attack executed.");
-    }
 }

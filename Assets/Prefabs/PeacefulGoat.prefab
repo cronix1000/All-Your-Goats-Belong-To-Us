@@ -47,15 +47,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b350573198b9a4bbccf7e85dd997ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  herdingUICanvas: {fileID: 0}
+  herdingProgressFillImage: {fileID: 0}
   wanderSpeed: 2
   wanderRadius: 20
   minWanderTime: 5
   maxWanderTime: 5
   goatHeight: 2
-  followPlayerSpeed: 0.7
-  followDistanceToPlayer: 0.2
-  herdDetectionRadiusPlayer: 1
-  autoHerdOnPlayerContact: 1
+  followPlayerSpeed: 2
+  followDistanceToPlayer: 20
   currentState: 0
   cyborgGoatPrefab: {fileID: 4359654655100326907, guid: dd648d8edbbf9fe4196a9e73e9430de4, type: 3}
 --- !u!50 &7777759552530034363

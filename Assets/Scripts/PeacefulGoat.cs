@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using System.Linq;
+// No longer need System.Linq if stacking is fully removed and no OrderBy is used.
 
 public class PeacefulGoat : MonoBehaviour
 {
@@ -18,71 +18,111 @@ public class PeacefulGoat : MonoBehaviour
     private float wanderTimer;
     private Vector3 initialPosition;
 
-    // Stacking variables
-    public float goatHeight = 0.5f;
-    private PeacefulGoat goatBelowMe = null;
-    private List<PeacefulGoat> goatsOnTopOfMe = new List<PeacefulGoat>();
+    // --- REMOVED STACKING VARIABLES ---
+    // public float goatHeight = 0.5f;
+    // private PeacefulGoat goatBelowMe = null;
+    // private List<PeacefulGoat> goatsOnTopOfMe = new List<PeacefulGoat>();
 
     // Herding variables
     public float followPlayerSpeed = 2.5f;
-    public float followDistanceToPlayer = 1.5f; // How close it tries to stay
-    public float maxFollowDistance = 10f;       // Max distance before "too far" timer starts
-    public float timeToUnherdWhenTooFar = 5f;   // Duration to be "too far" before unherding
-    // public bool autoHerdOnPlayerContact = false; // Set to false if focused herding is primary
+    public float followDistanceToPlayer = 1.5f;
+    public float maxFollowDistance = 10f;
+    public float timeToUnherdWhenTooFar = 5f;
 
-    private Transform playerTransformRef; // Renamed for clarity
+    // Separation variables
+    public float separationRadius = 1.0f; // How close other goats need to be to push away
+    public float separationForce = 5.0f;  // Strength of the push
+    public LayerMask peacefulGoatLayer;   // Set this in Inspector to the layer PeacefulGoats are on
+    private float separationCheckInterval = 0.1f; // How often to apply separation
+    private float currentSeparationCheckTimer = 0f;
+
+    private Transform playerTransformRef;
     private Rigidbody2D rb;
     private Collider2D mainCollider;
 
-    public enum GoatState { Wandering, Stacked, Herded, Converting, BeingFocusedForHerding }
+    // Simplified states without 'Stacked'
+    public enum GoatState { Wandering, Herded, Converting, BeingFocusedForHerding }
     public GoatState currentState = GoatState.Wandering;
 
-    private bool isBaseOfStack = true;
-    private bool isStackedOnAnother = false;
+    // --- REMOVED STACKING STATE FLAGS ---
+    // private bool isBaseOfStack = true;
+    // private bool isStackedOnAnother = false;
 
     private float currentHerdingFocusProgress = 0f;
     private float totalHerdingFocusDuration = 0f;
-
     private float timeSpentTooFarFromPlayer = 0f;
-    private float distanceCheckInterval = 0.5f; // How often to check distance when herded
+    private float distanceCheckInterval = 0.5f;
     private float currentDistanceCheckTimer = 0f;
-
 
     public GameObject cyborgGoatPrefab;
     private bool turnedIntoCyborgForReal = false;
+
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         mainCollider = GetComponent<Collider2D>();
 
-        if (rb.bodyType != RigidbodyType2D.Kinematic)
+        if (rb != null) // Ensure Rigidbody exists
         {
-            rb.gravityScale = 0;
+            if (rb.bodyType != RigidbodyType2D.Kinematic)
+            {
+                rb.gravityScale = 0;
+            }
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
+        else
+        {
+            Debug.LogError($"{gameObject.name} is missing a Rigidbody2D component needed for movement and separation!");
+        }
+
         initialPosition = transform.position;
         SetNewWanderTarget();
 
-        // Find player transform for following
-        if (PlayerController.Instance != null) // Use the singleton instance
+        if (PlayerController.Instance != null)
         {
             playerTransformRef = PlayerController.Instance.transform;
         }
         else
         {
             Debug.LogWarning("PeacefulGoat: PlayerController.Instance not found! Herding/Following might not work correctly.");
-            // Fallback if needed, though singleton is preferred
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
             if (playerObj != null) playerTransformRef = playerObj.transform;
         }
-
 
         GameManager.Instance?.RegisterPeacefulGoat();
 
         if (herdingUICanvas != null) herdingUICanvas.gameObject.SetActive(false);
         if (herdingProgressFillImage != null) herdingProgressFillImage.fillAmount = 0;
 
+        currentSeparationCheckTimer = Random.Range(0, separationCheckInterval); // Stagger initial checks slightly
+
         UpdateVisualState();
+    }
+
+    // function to push goats away from each other
+    void ApplySeparationForce()
+    {
+        if (rb == null || rb.isKinematic) return; // Only apply if not kinematic
+
+        Collider2D[] nearbyGoats = Physics2D.OverlapCircleAll(transform.position, separationRadius, peacefulGoatLayer);
+        Vector2 separationVector = Vector2.zero;
+
+        foreach (Collider2D goat in nearbyGoats)
+        {
+            if (goat != null && goat != mainCollider) // Avoid self-collision
+            {
+                Vector2 direction = (Vector2)transform.position - (Vector2)goat.transform.position;
+                float distance = direction.magnitude;
+                if (distance < separationRadius && distance > 0f)
+                {
+                    separationVector += direction.normalized * separationForce / distance; // Inverse distance for stronger push when closer
+                }
+            }
+        }
+
+        rb.AddForce(separationVector, ForceMode2D.Force);
     }
 
     void Update()
@@ -92,23 +132,21 @@ public class PeacefulGoat : MonoBehaviour
             case GoatState.Wandering:
                 Wander();
                 break;
-            case GoatState.Stacked:
-                if (isBaseOfStack) Wander();
-                else if (goatBelowMe != null) UpdateStackedPosition();
-                break;
+            // --- REMOVED STACKED STATE ---
+            // case GoatState.Stacked:
+            // if (isBaseOfStack) Wander();
+            // else if (goatBelowMe != null) UpdateStackedPosition();
+            // break;
             case GoatState.Herded:
                 FollowPlayer();
-                CheckIfTooFarFromPlayer(); // New check
+                CheckIfTooFarFromPlayer();
                 break;
             case GoatState.BeingFocusedForHerding:
-                // UI progress is handled externally by player calls
                 break;
             case GoatState.Converting:
-                // Conversion animation/logic
                 break;
         }
 
-        // Ensure World Space UI faces camera (optional, simple version)
         if (currentState == GoatState.BeingFocusedForHerding && herdingUICanvas != null && Camera.main != null)
         {
             herdingUICanvas.transform.rotation = Quaternion.LookRotation(herdingUICanvas.transform.position - Camera.main.transform.position);
@@ -117,9 +155,19 @@ public class PeacefulGoat : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Movement logic for dynamic rigidbodies
-        if (rb != null && !rb.isKinematic)
+        if (rb == null) return;
+        
+
+
+        if (!rb.isKinematic)
         {
+            currentSeparationCheckTimer -= Time.fixedDeltaTime;
+            if (currentSeparationCheckTimer <= 0f)
+            {
+                currentSeparationCheckTimer = separationCheckInterval;
+                ApplySeparationForce();
+            }
+
             if (currentState == GoatState.Wandering)
             {
                 Vector2 direction = (wanderTarget - (Vector2)transform.position).normalized;
@@ -138,26 +186,27 @@ public class PeacefulGoat : MonoBehaviour
                 }
                 else
                 {
-                    rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, Vector2.zero, Time.fixedDeltaTime * 5f);
+                    rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, Vector2.zero, Time.fixedDeltaTime * 10f); // Increased lerp factor for quicker stop
                 }
             }
-            else
+            else if (currentState != GoatState.BeingFocusedForHerding && currentState != GoatState.Converting) // Don't halt if being focused or converting
             {
-                // rb.velocity = Vector2.zero; // Stop if no specific movement logic for other states
+                 // If not wandering or herded, and dynamic, consider what its velocity should be.
+                 // For now, let it be affected by separation or other forces.
+                 // To make it stop if not actively moving:
+                 // rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, Time.fixedDeltaTime * 2f);
             }
         }
     }
 
 
-    #region Movement Behaviours
+    #region Movement Behaviours (Wander, FollowPlayer, Separation)
     void Wander()
     {
-        // For kinematic or transform-based movement
-        if (rb == null || rb.isKinematic) {
-             transform.position = Vector2.MoveTowards(transform.position, wanderTarget, wanderSpeed * Time.deltaTime);
+        if (rb == null || rb.isKinematic)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, wanderTarget, wanderSpeed * Time.deltaTime);
         }
-        // For dynamic rigidbody, velocity is set in FixedUpdate
-
         wanderTimer -= Time.deltaTime;
         if (wanderTimer <= 0f || Vector2.Distance(transform.position, wanderTarget) < 0.1f)
         {
@@ -175,12 +224,9 @@ public class PeacefulGoat : MonoBehaviour
     {
         if (playerTransformRef == null)
         {
-            Debug.LogWarning($"{gameObject.name} trying to follow, but playerTransformRef is null. Becoming wandering.");
-            BecomeWandering(); // No player to follow
+            BecomeWandering();
             return;
         }
-
-        // For kinematic or transform-based movement
         if (rb == null || rb.isKinematic)
         {
             if (Vector2.Distance(transform.position, playerTransformRef.position) > followDistanceToPlayer)
@@ -189,7 +235,6 @@ public class PeacefulGoat : MonoBehaviour
                 transform.position += (Vector3)direction * followPlayerSpeed * Time.deltaTime;
             }
         }
-        // For dynamic rigidbody, velocity is set in FixedUpdate
     }
 
     void CheckIfTooFarFromPlayer()
@@ -197,28 +242,24 @@ public class PeacefulGoat : MonoBehaviour
         currentDistanceCheckTimer -= Time.deltaTime;
         if (currentDistanceCheckTimer <= 0f)
         {
-            currentDistanceCheckTimer = distanceCheckInterval; // Reset cooldown
-
+            currentDistanceCheckTimer = distanceCheckInterval;
             if (playerTransformRef == null)
             {
-                BecomeWandering(); // Player disappeared
+                BecomeWandering();
                 return;
             }
-
             float distanceSqr = (transform.position - playerTransformRef.position).sqrMagnitude;
             if (distanceSqr > maxFollowDistance * maxFollowDistance)
             {
                 timeSpentTooFarFromPlayer += distanceCheckInterval;
-                // Debug.Log($"{gameObject.name} is too far from player. Time spent too far: {timeSpentTooFarFromPlayer}");
                 if (timeSpentTooFarFromPlayer >= timeToUnherdWhenTooFar)
                 {
-                    Debug.Log($"{gameObject.name} has been too far for too long. Unherding.");
-                    BecomeWandering(); // This will also notify PlayerController
+                    BecomeWandering();
                 }
             }
             else
             {
-                timeSpentTooFarFromPlayer = 0f; // Reset if back in range
+                timeSpentTooFarFromPlayer = 0f;
             }
         }
     }
@@ -227,7 +268,8 @@ public class PeacefulGoat : MonoBehaviour
     #region State Transitions and Player Focus
     public void StartPlayerHerdingFocus(float totalFocusTime)
     {
-        if (currentState == GoatState.Wandering || currentState == GoatState.Stacked)
+        // Can only be focused if Wandering (no longer Stacked as an option here)
+        if (currentState == GoatState.Wandering)
         {
             currentState = GoatState.BeingFocusedForHerding;
             totalHerdingFocusDuration = totalFocusTime;
@@ -252,8 +294,7 @@ public class PeacefulGoat : MonoBehaviour
     {
         if (currentState == GoatState.BeingFocusedForHerding)
         {
-            if (isStackedOnAnother || goatsOnTopOfMe.Any()) currentState = GoatState.Stacked;
-            else currentState = GoatState.Wandering;
+            currentState = GoatState.Wandering;
             if (herdingUICanvas != null) herdingUICanvas.gameObject.SetActive(false);
             currentHerdingFocusProgress = 0f;
             UpdateVisualState();
@@ -266,170 +307,76 @@ public class PeacefulGoat : MonoBehaviour
         {
             if (herdingUICanvas != null) herdingUICanvas.gameObject.SetActive(false);
             currentHerdingFocusProgress = 0f;
-            BecomeHerded(); // This sets the state and calls PlayerController.Instance.AddGoatToHerd
+            BecomeHerded();
         }
     }
 
     public void BecomeHerded()
     {
         if (currentState == GoatState.Herded || currentState == GoatState.Converting) return;
-        GoatState previousState = currentState;
+        // GoatState previousState = currentState; // No longer need to check for previous Stacked state specifically
         currentState = GoatState.Herded;
         Debug.Log(gameObject.name + " became herded.");
 
-        if (PlayerController.Instance != null) // Notify PlayerController to add to its list
-        {
-            PlayerController.Instance.AddGoatToHerd(this);
-        }
+        if (PlayerController.Instance != null) PlayerController.Instance.AddGoatToHerd(this);
+        timeSpentTooFarFromPlayer = 0f;
+        currentDistanceCheckTimer = distanceCheckInterval;
 
-        timeSpentTooFarFromPlayer = 0f; // Reset this timer when becoming herded
-        currentDistanceCheckTimer = distanceCheckInterval; // Start checking distance soon
 
-        if (previousState == GoatState.Stacked || isStackedOnAnother || goatsOnTopOfMe.Any()) UnstackFully();
-        if (mainCollider != null) mainCollider.isTrigger = true;
-        if (rb != null) { rb.isKinematic = false; rb.mass = 0.5f; }
+        if (rb != null) { rb.bodyType = RigidbodyType2D.Dynamic; rb.mass = 0.5f; rb.gravityScale = 0; } // Ensure dynamic for forces
         UpdateVisualState();
     }
 
-    public void BecomeWandering() // Can be called by self (too far) or externally
+    public void BecomeWandering()
     {
         if (currentState == GoatState.Wandering || currentState == GoatState.Converting) return;
-
         GoatState oldState = currentState;
         currentState = GoatState.Wandering;
-        Debug.Log($"{gameObject.name} is now wandering (was {oldState}).");
 
-        if (oldState == GoatState.Herded && PlayerController.Instance != null) // If it was herded, notify PlayerController
-        {
-            PlayerController.Instance.RemoveGoatFromHerd(this);
-        }
-
-        timeSpentTooFarFromPlayer = 0f; // Reset this specific timer
-        if (mainCollider != null) mainCollider.isTrigger = false;
-        if (rb != null) rb.mass = 1f;
+        if (oldState == GoatState.Herded && PlayerController.Instance != null) PlayerController.Instance.RemoveGoatFromHerd(this);
+        timeSpentTooFarFromPlayer = 0f;
+        if (mainCollider != null) mainCollider.isTrigger = false; // Make it solid again when wandering
+        if (rb != null) { rb.mass = 1f; rb.bodyType = RigidbodyType2D.Dynamic; } // Ensure dynamic for wander physics
         SetNewWanderTarget();
         UpdateVisualState();
     }
     #endregion
-
-    // Stacking Logic (largely unchanged, ensure state checks are robust)
-    #region Stacking Logic
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (currentState == GoatState.Converting || currentState == GoatState.Herded || currentState == GoatState.BeingFocusedForHerding) return;
-
-        // Optional: autoHerdOnPlayerContact logic removed for clarity if focused herding is primary
-        // If you want it, re-add checks similar to previous versions.
-
-        if (currentState == GoatState.Wandering || (currentState == GoatState.Stacked && isBaseOfStack))
-        {
-            PeacefulGoat otherGoat = collision.gameObject.GetComponent<PeacefulGoat>();
-            if (otherGoat != null && otherGoat != this &&
-                otherGoat.currentState != GoatState.Herded &&
-                otherGoat.currentState != GoatState.Converting &&
-                otherGoat.currentState != GoatState.BeingFocusedForHerding)
-            {
-                ContactPoint2D[] contacts = new ContactPoint2D[collision.contactCount];
-                collision.GetContacts(contacts);
-                foreach (ContactPoint2D contact in contacts)
-                {
-                    if (Vector2.Dot(contact.normal, Vector2.up) > 0.7f) // This goat's bottom hit something
-                    {
-                        TryStackOn(otherGoat.GetBaseOfStack());
-                        break;
-                    }
-                }
-            }
-        }
+        // If you want wandering goats to have some physical reaction to bumping each other (besides separation force)
+        // you can add it here, but be careful it doesn't fight the separation.
+        // For now, let separation handle inter-goat pushing.
+        // Example: if (currentState == GoatState.Wandering && collision.gameObject.GetComponent<PeacefulGoat>() != null) { // maybe a small bounce }
     }
-    void TryStackOn(PeacefulGoat bottomGoatCandidate)
-    {
-        if (currentState == GoatState.Stacked && isStackedOnAnother) return;
-        if (bottomGoatCandidate == this || bottomGoatCandidate.currentState == GoatState.Herded || bottomGoatCandidate.currentState == GoatState.BeingFocusedForHerding) return;
-
-        currentState = GoatState.Stacked; isStackedOnAnother = true; isBaseOfStack = false;
-        goatBelowMe = bottomGoatCandidate; bottomGoatCandidate.AddGoatOnTop(this);
-        if (rb != null) { rb.linearVelocity = Vector2.zero; rb.isKinematic = true; }
-        UpdateStackedPosition(); UpdateVisualState();
-    }
-    public void AddGoatOnTop(PeacefulGoat goatToAdd)
-    {
-        if (!goatsOnTopOfMe.Contains(goatToAdd))
-        {
-            goatsOnTopOfMe.Add(goatToAdd); goatToAdd.goatBelowMe = this;
-            goatToAdd.currentState = GoatState.Stacked; goatToAdd.isStackedOnAnother = true; goatToAdd.isBaseOfStack = false;
-            if (goatToAdd.rb != null) goatToAdd.rb.isKinematic = true;
-            if (currentState != GoatState.Stacked) currentState = GoatState.Stacked;
-            if (rb != null && !rb.isKinematic && goatBelowMe != null) rb.isKinematic = true;
-            UpdateVisualState(); goatToAdd.UpdateVisualState();
-        }
-    }
-    public void UpdateStackedPosition()
-    {
-        if (goatBelowMe != null && currentState == GoatState.Stacked && isStackedOnAnother)
-        {
-            int myIndexInStackAboveGoatBelow = goatBelowMe.goatsOnTopOfMe.IndexOf(this);
-            if (myIndexInStackAboveGoatBelow != -1)
-            {
-                 transform.position = goatBelowMe.transform.position + Vector3.up * goatHeight * (myIndexInStackAboveGoatBelow + 1);
-                 transform.rotation = goatBelowMe.transform.rotation;
-            }
-        }
-    }
-    private void UnstackFully()
-    {
-        if (goatBelowMe != null) { goatBelowMe.goatsOnTopOfMe.Remove(this); goatBelowMe = null; }
-        foreach (var goatAbove in new List<PeacefulGoat>(goatsOnTopOfMe)) { goatAbove?.BecomeBaseAndWander(); }
-        goatsOnTopOfMe.Clear();
-        isStackedOnAnother = false; isBaseOfStack = true;
-        if (rb != null) rb.isKinematic = false; // Allow physics again
-    }
-    public void BecomeBaseAndWander()
-    {
-        goatBelowMe = null; isStackedOnAnother = false; isBaseOfStack = true;
-        currentState = GoatState.Wandering;
-        if (rb != null) rb.isKinematic = false;
-        SetNewWanderTarget(); UpdateVisualState();
-    }
-    public PeacefulGoat GetBaseOfStack()
-    {
-        if (isBaseOfStack || goatBelowMe == null) return this;
-        return goatBelowMe.GetBaseOfStack();
-    }
-    #endregion
 
     #region Conversion
-    public void StartConversionProcess() // Called by enemy
+    public void StartConversionProcess()
     {
         if (currentState == GoatState.Converting) return;
-        Debug.Log(gameObject.name + " is being converted by enemy!");
         GoatState prevState = currentState;
         currentState = GoatState.Converting;
         turnedIntoCyborgForReal = true;
         if (rb != null) rb.linearVelocity = Vector2.zero;
 
-        if (prevState == GoatState.Herded && PlayerController.Instance != null) PlayerController.Instance.RemoveGoatFromHerd(this); // Remove from herd if converting
+        if (prevState == GoatState.Herded && PlayerController.Instance != null) PlayerController.Instance.RemoveGoatFromHerd(this);
         if (prevState == GoatState.BeingFocusedForHerding && herdingUICanvas != null) herdingUICanvas.gameObject.SetActive(false);
-        UnstackFully();
-        Invoke("CompleteConversion", 0.1f); // Small delay for visual state change
+        CompleteConversion();
         UpdateVisualState();
     }
     private void CompleteConversion()
     {
-        GameManager.Instance?.GoatConvertedToCyborg();
+        GameManager.Instance?.GoatConvertedToCyborg(); 
         if (cyborgGoatPrefab != null) Instantiate(cyborgGoatPrefab, transform.position, transform.rotation);
         else Debug.LogError("CyborgGoatPrefab not assigned to " + gameObject.name);
         Destroy(gameObject);
     }
     #endregion
 
-    void UpdateVisualState() { /* Optional: Change sprite/color based on state */ }
+    void UpdateVisualState() { /* Optional: Change sprite based on state, or for debugging */ }
 
     void OnDestroy()
     {
-        if (currentState == GoatState.Herded && PlayerController.Instance != null) PlayerController.Instance.RemoveGoatFromHerd(this); // Ensure removal if destroyed while herded
-        if (isStackedOnAnother && goatBelowMe != null) goatBelowMe.goatsOnTopOfMe.Remove(this);
-        foreach (var goatAbove in goatsOnTopOfMe) { goatAbove?.BecomeBaseAndWander(); }
-        if (!turnedIntoCyborgForReal) GameManager.Instance?.UnregisterPeacefulGoat();
+        if (currentState == GoatState.Herded && PlayerController.Instance != null) PlayerController.Instance.RemoveGoatFromHerd(this);
+        if (!turnedIntoCyborgForReal) GameManager.Instance?.UnregisterPeacefulGoat(); 
     }
 }

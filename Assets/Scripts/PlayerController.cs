@@ -27,6 +27,9 @@ public class PlayerController : MonoBehaviour
     public List<PeacefulGoat> herdedGoats = new List<PeacefulGoat>();
     public static PlayerController Instance { get; private set; } // Singleton for easy access
 
+    public GameObject MainProjectilePrefab;
+    public GameObject SecondaryProjectilePrefab; // Add this line to declare the secondary projectile prefab
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -119,7 +122,7 @@ public class PlayerController : MonoBehaviour
         {
             PeacefulGoat goat = col.GetComponent<PeacefulGoat>();
             if (goat != null &&
-                (goat.currentState == PeacefulGoat.GoatState.Wandering || goat.currentState == PeacefulGoat.GoatState.Stacked))
+                (goat.currentState == PeacefulGoat.GoatState.Wandering))
             {
                 if (herdedGoats.Contains(goat)) continue; // Don't try to re-focus an already herded goat
 
@@ -195,6 +198,11 @@ public class PlayerController : MonoBehaviour
     {
         // Implement main attack logic here
         Debug.Log("Main attack executed.");
+        // Example: Instantiate a projectile
+        GameObject projectile = Instantiate(MainProjectilePrefab, transform.position, Quaternion.identity);
+        Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
+        Vector2 direction = (Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()) - transform.position).normalized;
+        projectileRb.linearVelocity = direction * 10f; // Adjust speed as needed
     }
     private void SecondaryAttack()
     {

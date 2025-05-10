@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 7031305963872157335}
   m_Layer: 0
   m_Name: CyberGoat
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -144,6 +144,14 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
+  wanderSpeedMultiplier: 0.6
+  wanderRadius: 5
+  wanderPointReachedThreshold: 0.5
+  wanderTimerDurationMin: 2
+  wanderTimerDurationMax: 5
+  healthBarFill: {fileID: 0}
+  totalHealth: 20
+  health: 0
 --- !u!50 &7958559584831398479
 Rigidbody2D:
   serializedVersion: 5
@@ -152,14 +160,14 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4359654655100326907}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

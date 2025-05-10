@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &495608980 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 432170877296318696, guid: db9e9cf22708a4f40b2c260a2a082b3b, type: 3}
+  m_PrefabInstance: {fileID: 331399935558632038}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,7 +275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 893094364}
-  smoothSpeed: 0.125
+  smoothSpeed: 1
   offset: {x: 0, y: 0, z: 0}
 --- !u!1 &619394800
 GameObject:
@@ -361,6 +366,123 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5305483194165570554, guid: db9e9cf22708a4f40b2c260a2a082b3b, type: 3}
   m_PrefabInstance: {fileID: 331399935558632038}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &893094367 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 36691515428720925, guid: db9e9cf22708a4f40b2c260a2a082b3b, type: 3}
+  m_PrefabInstance: {fileID: 331399935558632038}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 495608980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b4c20fd646a4c947a6edad6c810051e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &893094368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 495608980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ea48905d6fab2e439d7492136425bc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 893094367}
+  uiManager: {fileID: 1928299273}
+  upgradeManager: {fileID: 1928299272}
+  currentLevel: 0
+  herdSizeThresholdsForLevelUp: 0300000005000000080000000c00000010000000
+--- !u!1 &1928299271
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1928299275}
+  - component: {fileID: 1928299274}
+  - component: {fileID: 1928299273}
+  - component: {fileID: 1928299272}
+  m_Layer: 0
+  m_Name: Managers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1928299272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928299271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5093d7943fabfc14f9a4062592c3aaf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allPossibleUpgrades: []
+--- !u!114 &1928299273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928299271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3e66faad1bcbcd409c32062b92ef92b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  upgradePanel: {fileID: 0}
+  upgradeCardSlots: []
+--- !u!114 &1928299274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928299271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb425736904efa5498395340df2a3326, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  peacefulGoatsCount: 0
+  cyborgGoatsCount: 0
+  totalGoatsToSave: 10
+  maxCyborgGoatsAllowed: 5
+  playerXP: 0
+  playerLevel: 1
+  xpToNextLevel: 100
+  playerHealth: 100
+  playerMaxHealth: 100
+  peacefulGoatsText: {fileID: 0}
+  cyborgGoatsText: {fileID: 0}
+  xpText: {fileID: 0}
+  levelText: {fileID: 0}
+  playerHealthText: {fileID: 0}
+  gameOverScreen: {fileID: 0}
+  winScreen: {fileID: 0}
+--- !u!4 &1928299275
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928299271}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.3583708, y: 0.27298266, z: 0.025166225}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1938674025
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,11 +600,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefabs:
-  - {fileID: 4359654655100326907, guid: dd648d8edbbf9fe4196a9e73e9430de4, type: 3}
   - {fileID: 1632287165159457289, guid: 4bf4d76272138104a8258295f74391eb, type: 3}
+  - {fileID: 4359654655100326907, guid: dd648d8edbbf9fe4196a9e73e9430de4, type: 3}
   spawnInterval: 5
-  spawnDistanceMultiplier: 1.2
-  maxEnemies: 20
+  spawnDistanceMultiplier: 0.8
+  maxEnemies: 50
 --- !u!4 &2081980449
 Transform:
   m_ObjectHideFlags: 0
@@ -506,6 +628,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 36691515428720925, guid: db9e9cf22708a4f40b2c260a2a082b3b, type: 3}
+      propertyPath: goatLayer.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 36691515428720925, guid: db9e9cf22708a4f40b2c260a2a082b3b, type: 3}
+      propertyPath: MainProjectilePrefab
+      value: 
+      objectReference: {fileID: 3557159527954735519, guid: 56635b4c058cef84f88fa51dcc670586, type: 3}
     - target: {fileID: 432170877296318696, guid: db9e9cf22708a4f40b2c260a2a082b3b, type: 3}
       propertyPath: m_Name
       value: Player
@@ -554,10 +684,17 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8416596220522955802, guid: db9e9cf22708a4f40b2c260a2a082b3b, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 432170877296318696, guid: db9e9cf22708a4f40b2c260a2a082b3b, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 893094368}
   m_SourcePrefab: {fileID: 100100000, guid: db9e9cf22708a4f40b2c260a2a082b3b, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -568,3 +705,4 @@ SceneRoots:
   - {fileID: 1938674028}
   - {fileID: 331399935558632038}
   - {fileID: 2081980449}
+  - {fileID: 1928299275}

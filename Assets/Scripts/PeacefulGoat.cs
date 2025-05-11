@@ -28,7 +28,7 @@ public class PeacefulGoat : BaseAI // Inherit from BaseAI
 
     [Header("Conversion")]
     public GameObject cyborgGoatPrefab;
-
+    public bool isHerded = false;
     public enum GoatState { Wandering, Herded, Converting, BeingFocusedForHerding, Eating }
     [SerializeField] public GoatState currentState = GoatState.Wandering; // Made public for easier debugging/external checks if needed
 
@@ -286,6 +286,7 @@ public class PeacefulGoat : BaseAI // Inherit from BaseAI
         if (currentState == GoatState.Eating) ExitEatingState(false);
 
         currentState = GoatState.Herded;
+        isHerded = true; // Set herded state
         Debug.Log(gameObject.name + " became herded.");
         PlayerController.Instance?.AddGoatToHerd(this); // Notify Player
         timeSpentTooFarFromPlayer = 0f; // Reset this timer
@@ -298,7 +299,7 @@ public class PeacefulGoat : BaseAI // Inherit from BaseAI
     {
         if (currentState == GoatState.Wandering || currentState == GoatState.Converting) return;
         GoatState oldState = currentState;
-
+        isHerded = false; // Reset herded state
         if (currentState == GoatState.Eating) ExitEatingState(false);
 
         currentState = GoatState.Wandering;

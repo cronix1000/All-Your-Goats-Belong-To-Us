@@ -210,7 +210,7 @@ public class WaveManager : MonoBehaviour
         if (dialogueCardUI && dialogueText)
         {
                 dialogueCardUI.SetActive(true);
-            TypeDialogueText(currentWave.endOfWaveDialogue, dialogueText, 5f); // Assuming 20 characters per second
+            StartCoroutine(TypeDialogueText(currentWave.endOfWaveDialogue, dialogueText, 5f)); // Assuming 20 characters per second
             StartCoroutine(DialoguePhaseCoroutine());
         }
         else
@@ -221,7 +221,7 @@ public class WaveManager : MonoBehaviour
 
     IEnumerator DialoguePhaseCoroutine()
     {
-        yield return new WaitForSeconds(5f); // Or wait for player input
+        yield return new WaitForSeconds(2f); // Or wait for player input
         CloseDialogueAndStartCooldown();
     }
 
@@ -287,11 +287,6 @@ public class WaveManager : MonoBehaviour
             
             Debug.Log($"A peaceful goat was converted to a cyborg. Converted this wave: {goatsherdedThisWave}/{peacefulGoatsSpawnedThisWave}");
             goatsherdedThisWave--;
-            Debug.Log($"A peaceful goat was converted. Converted this wave: {goatsherdedThisWave}/{peacefulGoatsSpawnedThisWave}");
-            if (goatsherdedThisWave >= peacefulGoatsSpawnedThisWave)
-            {
-                EndWave();
-            }
         }
     }
 

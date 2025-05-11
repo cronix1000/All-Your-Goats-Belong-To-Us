@@ -161,8 +161,8 @@ MonoBehaviour:
   wanderAroundInitialPosition: 1
   visualsTransform: {fileID: 4172130415149497660}
   useMapBoundaries: 1
-  mapMinBounds: {x: 0, y: 0}
-  mapMaxBounds: {x: 50, y: 50}
+  mapMinBounds: {x: 5, y: 5}
+  mapMaxBounds: {x: 45, y: 45}
   herdingUICanvas: {fileID: 4490533906092824293}
   herdingProgressFillImage: {fileID: 6908310165784988117}
   followPlayerSpeedMultiplier: 1
@@ -176,6 +176,7 @@ MonoBehaviour:
     m_Bits: 64
   eatingDuration: 3
   cyborgGoatPrefab: {fileID: 4359654655100326907, guid: dd648d8edbbf9fe4196a9e73e9430de4, type: 3}
+  isHerded: 0
   currentState: 0
 --- !u!50 &7777759552530034363
 Rigidbody2D:

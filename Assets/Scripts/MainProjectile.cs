@@ -17,7 +17,7 @@ public class MainProjectile : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // push back enemy 
-        if(collision.gameObject.tag == "Enemy")
+        if(collision.gameObject.CompareTag("Enemy"))
         {
             // find angle that the projectile was fired
             Vector2 direction = (collision.transform.position - transform.position).normalized;
@@ -30,7 +30,7 @@ public class MainProjectile : MonoBehaviour {
         }
 
 
-        if(collision.gameObject.tag == "EnemyGoat")
+        if(collision.gameObject.CompareTag("EnemyGoat"))
         {
             // find angle that the projectile was fired
             Vector2 direction = (collision.transform.position - transform.position).normalized;

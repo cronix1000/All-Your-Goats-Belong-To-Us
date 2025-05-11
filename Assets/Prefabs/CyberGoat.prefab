@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 1892801661932636961}
   m_Layer: 8
   m_Name: CyberGoat
-  m_TagString: Enemy
+  m_TagString: EnemyGoat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

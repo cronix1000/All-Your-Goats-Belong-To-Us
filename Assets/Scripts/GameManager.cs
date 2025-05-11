@@ -56,15 +56,13 @@ public class GameManager : MonoBehaviour
         {
             peacefulGoatsCount--;
         }
-        if(goat.IsGoatHerded())
+        if(goat.isHerded)
         {
             goatsHerded--;
             WaveManager.Instance.NotifyHerdedGoatConverted(); // Notify WaveManager of the conversion
         }
         UpdateUI();
         CheckLossCondition(); // Keep your original loss condition logic
-
-
     }
 
     public void GoatHerded()

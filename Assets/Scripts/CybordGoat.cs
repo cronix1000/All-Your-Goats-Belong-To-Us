@@ -5,7 +5,24 @@ public class CybordGoat : BasicEnemyAI
 {
 
     public GameObject peacefulGoatPrefab; // Assign the prefab in the inspector
+    public bool isAbleToConvert = false; // Flag to check if the goat can be converted
 
+    // If they are in the conversion circle, they can be converted
+    public void ReadyToConvert()
+    {
+        // Check if the goat is ready to be converted
+        if (isAbleToConvert)
+        {
+            // Call the conversion method
+            ConvertToFriendly();
+        }
+        else
+        {
+            Debug.LogWarning("Cybord Goat is not ready to convert.", this);
+        }
+    }
+
+// This method is called when the Cybord Goat is converted to a friendly goat when they are clicked on in the conversion circle
     public void ConvertToFriendly()
     {
         // Instantiate the peaceful goat prefab at the current position
@@ -28,7 +45,7 @@ public void PullTowards(Vector2 targetPosition, float pullForce, float pullDurat
 
         // Calculate the direction from the goat towards the target position.
         Vector2 directionToTarget = (targetPosition - (Vector2)transform.position);
-    
+
         // If already very close to the target, might not need a strong pull or any pull.
         if (directionToTarget.sqrMagnitude < 0.01f) // Roughly 0.1 units
         {

@@ -17,12 +17,23 @@ public class MainProjectile : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // push back enemy 
-        if(collision.gameObject.tag == "Enemy"){
+        if(collision.gameObject.tag == "Enemy")
+        {
             // find angle that the projectile was fired
             Vector2 direction = (collision.transform.position - transform.position).normalized;
 
             // call enemy damamge function
             collision.gameObject.GetComponent<BasicEnemyAI>().TakeDamage(damage);
+            // push back enemy
+            collision.gameObject.GetComponent<BasicEnemyAI>().ApplyKnockback(direction, 5f, .3f);
+            Destroy(gameObject);
+        }
+
+
+        if(collision.gameObject.tag == "EnemyGoat")
+        {
+            // find angle that the projectile was fired
+            Vector2 direction = (collision.transform.position - transform.position).normalized;
             // push back enemy
             collision.gameObject.GetComponent<BasicEnemyAI>().ApplyKnockback(direction, 5f, .3f);
             Destroy(gameObject);

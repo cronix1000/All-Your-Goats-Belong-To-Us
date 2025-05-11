@@ -23,6 +23,10 @@ public class PlayerController : MonoBehaviour
     private PeacefulGoat currentHerdingTargetGoat;
     private bool isCurrentlyFocusingHerd;
 
+    [SerializeField] private Transform visualTransform; // Reference to the visual representation of the player
+
+    [SerializeField] private Animator animator;
+
     // Public list to track herded goats. Goats will add/remove themselves via PlayerController methods.
     public List<PeacefulGoat> herdedGoats = new List<PeacefulGoat>();
     public static PlayerController Instance { get; private set; } // Singleton for easy access
@@ -62,6 +66,25 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         rb.linearVelocity = moveInput * moveSpeed; // Changed from linearVelocity to velocity for clarity
+
+// flip sprite based on movement direction
+        if (moveInput.x < 0)
+        {
+            visualTransform.localScale = new Vector3(1, 1, 1); // Facing right
+        }
+        else if (moveInput.x > 0)
+        {
+            visualTransform.localScale = new Vector3(-1, 1, 1); // Facing left
+        }
+
+        if (moveInput != Vector2.zero)
+        {
+            animator.SetBool("Walking", true);
+        }
+        else
+        {
+            animator.SetBool("Walking", false);
+        }
     }
 
     private void Update()

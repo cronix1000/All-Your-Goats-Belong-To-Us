@@ -71,4 +71,9 @@ public void PullTowards(Vector2 targetPosition, float pullForce, float pullDurat
     }
 
 
+    public override void OnCollisionEnter2D(Collision2D collision)
+    {
+        
+    }
+
 }

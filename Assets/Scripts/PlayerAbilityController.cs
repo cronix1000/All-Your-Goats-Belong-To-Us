@@ -37,6 +37,7 @@ public class PlayerAbilityController : MonoBehaviour
     [SerializeField] private Image pushCooldownUI; // Assign in Inspector
     private float currentPushCooldown = 0f;
 
+[SerializeField] Animator animator;
 
     private void Awake()
     {
@@ -124,6 +125,11 @@ public class PlayerAbilityController : MonoBehaviour
             return;
         }
 
+        if( animator != null)
+        animator.SetTrigger("Cast"); // Trigger the conversion animation
+
+
+
         if (!isConversionCircleActive)
         {
             // First press: Activate and place the circle
@@ -182,6 +188,9 @@ public class PlayerAbilityController : MonoBehaviour
             Debug.Log("Pull ability is on cooldown.");
             return;
         }
+
+if( animator != null)
+        animator.SetTrigger("Cast");
 
         Debug.Log("Pulling goats!");
         // Optional: Spawn a visual effect for pull if PullCirclePrefab is intended for that

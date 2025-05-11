@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 36691515428720925}
   - component: {fileID: -1375175023064867423}
   - component: {fileID: 8416596220522955802}
+  - component: {fileID: 4680801959133416236}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -48,9 +49,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  staffTip: {fileID: 0}
-  primaryAbilityProjectilePrefab: {fileID: 0}
-  secondaryAbilityEffectPrefab: {fileID: 0}
+  herdingRadius: 4
+  herdingScanInterval: 1
+  timeToFocusHerd: 1
+  goatLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  visualTransform: {fileID: 6762508710504959432}
+  animator: {fileID: 4021703754446250553}
+  herdedGoats: []
+  MainProjectilePrefab: {fileID: 0}
+  SecondaryProjectilePrefab: {fileID: 0}
 --- !u!50 &-1375175023064867423
 Rigidbody2D:
   serializedVersion: 5
@@ -124,6 +133,31 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &4680801959133416236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 432170877296318696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b7b0ced21433a945b0443d98d7b0ab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionCirclePrefab: {fileID: 5017894214061087604, guid: ad1910116cbbb1046904458ca3d4c880, type: 3}
+  conversionCircleRadius: 5
+  conversionAbilityCooldown: 10
+  conversionCooldownUI: {fileID: 0}
+  PullCirclePrefab: {fileID: 818747898631190803, guid: 009bb5cb0e7ff564884ad622b9e328a4, type: 3}
+  pullCircleRadius: 20
+  pullAbilityCooldown: 8
+  pullCooldownUI: {fileID: 0}
+  MainProjectilePrefab: {fileID: 3557159527954735519, guid: 56635b4c058cef84f88fa51dcc670586, type: 3}
+  pushAbilityCooldown: 2
+  projectileSpeed: 10
+  pushCooldownUI: {fileID: 0}
+  animator: {fileID: 4021703754446250553}
 --- !u!1 &7561296553069817147
 GameObject:
   m_ObjectHideFlags: 0
@@ -134,6 +168,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6762508710504959432}
   - component: {fileID: 6387271733689921174}
+  - component: {fileID: 4021703754446250553}
   m_Layer: 7
   m_Name: PlayerVisual
   m_TagString: Untagged
@@ -151,7 +186,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.041305948}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: -1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5305483194165570554}
@@ -200,8 +235,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.3317462, g: 0.44198418, b: 0.990566, a: 1}
+  m_Sprite: {fileID: -4753702385071775785, guid: e136ca49715216b4db963f5e6a495edc, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -211,3 +246,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &4021703754446250553
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7561296553069817147}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: af1d7688c7a7e9042b8ca0dde9e0fca4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

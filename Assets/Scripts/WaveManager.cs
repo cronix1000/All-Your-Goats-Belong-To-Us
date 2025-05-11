@@ -221,7 +221,7 @@ public class WaveManager : MonoBehaviour
 
     IEnumerator DialoguePhaseCoroutine()
     {
-        yield return new WaitForSeconds(2f); // Or wait for player input
+        yield return new WaitForSeconds(3.5f); // Or wait for player input
         CloseDialogueAndStartCooldown();
     }
 

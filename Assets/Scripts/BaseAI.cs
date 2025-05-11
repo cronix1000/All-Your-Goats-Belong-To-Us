@@ -246,7 +246,7 @@ public abstract class BaseAI : MonoBehaviour
     {
         // Base implementation can be empty or log. Derived classes override for specific reactions.
         // Debug.Log($"{gameObject.name} knockback started.");
-        if (rb != null) rb.linearVelocity = Vector2.zero; // Ensure velocity is killed if AddForce isn't perfectly replacing it.
+      //  if (rb != null) rb.linearVelocity = Vector2.zero; // Ensure velocity is killed if AddForce isn't perfectly replacing it.
     }
 
     protected virtual void OnKnockbackEnd()

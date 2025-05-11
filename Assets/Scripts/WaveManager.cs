@@ -280,7 +280,22 @@ public class WaveManager : MonoBehaviour
         }
     }
 
-    public void NotifyPeacefulGoatConverted()
+    public void NotifyHerdedGoatConverted()
+    {
+        if (currentState == WaveState.InProgress)
+        {
+            
+            Debug.Log($"A peaceful goat was converted to a cyborg. Converted this wave: {goatsherdedThisWave}/{peacefulGoatsSpawnedThisWave}");
+            goatsherdedThisWave--;
+            Debug.Log($"A peaceful goat was converted. Converted this wave: {goatsherdedThisWave}/{peacefulGoatsSpawnedThisWave}");
+            if (goatsherdedThisWave >= peacefulGoatsSpawnedThisWave)
+            {
+                EndWave();
+            }
+        }
+    }
+
+    public void NotifyPeacefulGoatHerded()
     {
         if (currentState == WaveState.InProgress)
         {

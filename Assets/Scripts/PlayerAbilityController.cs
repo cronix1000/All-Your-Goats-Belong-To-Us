@@ -53,10 +53,10 @@ public class PlayerAbilityController : MonoBehaviour {
         foreach (Collider2D goat in goatsInRange) {
             // Pull Goats towards the player
             if (goat.TryGetComponent(out PeacefulGoat peacefulGoat)) {
-                 peacefulGoat.PullTowardsPlayer(5f, 1f); // Adjust pull force as needed
+                 peacefulGoat.PullTowardsPlayer(5f, .2f); // Adjust pull force as needed
             }
             else if (goat.TryGetComponent(out CybordGoat cybordGoat)) {
-                cybordGoat.PullTowardsPlayer(5f, 1); // Adjust pull force as needed
+                cybordGoat.PullTowardsPlayer(5f, .2f); // Adjust pull force as needed
             }
         }
     }

@@ -385,7 +385,7 @@ public class PeacefulGoat : BaseAI // Inherit from BaseAI
 
     private void CompleteConversion()
     {
-        GameManager.Instance?.GoatConvertedToCyborg(); // Handles unregistering etc.
+        GameManager.Instance?.GoatConvertedToCyborg(this); // Handles unregistering etc.
         if (cyborgGoatPrefab != null) Instantiate(cyborgGoatPrefab, transform.position, transform.rotation);
         else Debug.LogError("CyborgGoatPrefab not assigned to " + gameObject.name, this);
         Destroy(gameObject);
@@ -479,4 +479,13 @@ public void PullTowards(Vector2 targetPosition, float pullForce, float pullDurat
         PullTowards(PlayerController.Instance.transform.position, pullForce, pullDuration);
     }
 
+
+    public bool IsGoatHerded()
+    {
+        return currentState == GoatState.Herded;
+    }
+    public bool IsGoatEating()
+    {
+        return currentState == GoatState.Eating;
+    }
 }

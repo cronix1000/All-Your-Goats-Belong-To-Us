@@ -223,10 +223,10 @@ MonoBehaviour:
   xpValue: 50
   goatLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   healthBarFill: {fileID: 0}
   totalHealth: 20
   currentHealth: 0

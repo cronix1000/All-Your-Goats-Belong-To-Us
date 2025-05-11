@@ -88,7 +88,7 @@ public class BasicEnemyAI : BaseAI // Inherit from BaseAI
         foreach (var hitCollider in hitColliders)
         {
             PeacefulGoat potentialGoat = hitCollider.GetComponent<PeacefulGoat>();
-            if (potentialGoat != null && potentialGoat.currentState != PeacefulGoat.GoatState.Converting)
+            if (potentialGoat && potentialGoat.currentState != PeacefulGoat.GoatState.Converting)
             {
                 float distanceSqr = (transform.position - hitCollider.transform.position).sqrMagnitude;
                 if (distanceSqr < closestDistanceSqr)

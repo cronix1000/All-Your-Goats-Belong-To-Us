@@ -50,14 +50,17 @@ public class GameManager : MonoBehaviour
     }
 
     // --- Goat Management ---
-    public void GoatConvertedToCyborg()
+    public void GoatConvertedToCyborg(PeacefulGoat goat)
     {
         if (peacefulGoatsCount > 0) // Ensure we don't go negative if something unexpected happens
         {
             peacefulGoatsCount--;
         }
-        cyborgGoatsCount++;
-        goatsHerded++;
+        if(goat.IsGoatHerded())
+        {
+            goatsHerded--;
+            WaveManager.Instance.NotifyHerdedGoatConverted(); // Notify WaveManager of the conversion
+        }
         UpdateUI();
         CheckLossCondition(); // Keep your original loss condition logic
 
@@ -69,7 +72,7 @@ public class GameManager : MonoBehaviour
                 // --- Notify WaveManager ---
         if (WaveManager.Instance != null)
         {
-            WaveManager.Instance.NotifyPeacefulGoatConverted();
+            WaveManager.Instance.NotifyPeacefulGoatHerded();
         }
         peacefulGoatsCount++;
         UpdateUI();
